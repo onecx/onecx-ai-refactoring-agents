@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "primeng": {
+      "command": "npx",
+      "args": ["-y", "@primeng/mcp"]
+    },
+    "npm-sentinel": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@nekzus/mcp-server"]
+    },
+    "onecx-docs-mcp": {
+      "type": "http",
+      "url": "https://onecx-docs-ai-dev.dev.one-cx.org/mcp"
+    },
+    "angular-cli": {
+      "_comment": "NEW-side Angular/Material DOCS + build/devserver VALIDATION (ng mcp). Verified: `@angular/cli` ships an `mcp` subcommand. In a real project, add `--root <abs-path-to-project>` for workspace discovery/filesystem access. Exposes mcp__angular-cli__* (search_documentation, get_best_practices, list_projects, run_target, devserver_*).",
+      "command": "npx",
+      "args": ["-y", "@angular/cli", "mcp"]
+    },
+    "ngm-dev-blocks": {
+      "_comment": "DEDICATED Angular Material MCP (ui.angular-material.dev/docs/mcp) — GENERATE new Material + Tailwind blocks. Verified: `@ngm-dev/cli mcp <dir>` exposes mcp__ngm-dev-blocks__* (setup-angular-material-blocks, generate-angular-material-block, get-all-block-names). Replace `full/path/to/angular/project` with the actual project dir before use. Complementary to angular-cli (which does docs + validation).",
+      "command": "npx",
+      "args": ["-y", "@ngm-dev/cli", "mcp", "/"]
+    }
+  }
+}
