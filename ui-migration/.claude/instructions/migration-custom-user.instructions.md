@@ -30,5 +30,5 @@
 - **CUSTOM_ELEMENTS_SCHEMA workaround**: "Added CUSTOM_ELEMENTS_SCHEMA to suppress unknown element" → NEVER do this; install the real package or reclassify the task to a later phase
 - **Partial execution with bridge hacks**: "Did HTML replacement but deferred module/provider setup" → if you can't do ALL sub-steps, leave the task `[ ]` and reclassify to the correct phase
 - **Reverting correct changes on build failure**: "Build failed after migration step, reverted everything" → diagnose root cause; if it's a missing package, reclassify; NEVER revert a correct migration change
-- **Installing incompatible packages**: "Tried npm install with --legacy-peer-deps, it removed 258 packages" → always check `npm view <pkg>@<ver> peerDependencies` BEFORE installing; if incompatible, reclassify task to Phase C
+- **Installing incompatible packages**: "Tried npm install with --legacy-peer-deps, it removed 258 packages" → always check `npm view <pkg>@<ver> peerDependencies` BEFORE installing; if incompatible, reclassify the task to a later phase
 - **Test skipping**: "Tests will be fixed later" → fix in same invocation

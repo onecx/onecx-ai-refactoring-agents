@@ -3,7 +3,7 @@
 Date Started: **[YYYY-MM-DD]**
 Repository: **[path/to/repo]**
 Git Branch: **[branch name]**
-Status: **[Gate 1 (baseline) / Gate 2 (branch) / Gate 3 (MCP) / Planning / In Progress (Phase A) / Phase B (package swap) / Phase C (cleanup) / Completed]**
+Status: **[Gate 1 (baseline) / Gate 2 (branch) / Gate 3 (MCP) / Planning / In Progress (Phase A) / Phase B (cleanup) / Completed]**
 Active Data File: **`.claude/instructions/ui-migration-prime-to-material.instructions.md`**
 Active Rules File: **`.claude/instructions/ui-migration-rules.instructions.md`**
 Migration identifier: **prime-to-material**
@@ -37,9 +37,9 @@ Migration identifier: **prime-to-material**
 | `@angular/core` | [X] | current framework major |
 | `@angular/material` | [X] | major MUST equal core major; note if already installed |
 | `@angular/cdk` | [X] | same major |
-| `primeng` | [X] | source library (to be removed in Phase B) |
-| `primeflex` | [X] | layout utilities (→ Tailwind in Phase A; removed in Phase B) |
-| `primeicons` | [X] | icon font (→ Material icons in Phase A; removed in Phase B) |
+| `primeng` | [X] | source library — **KEPT** (required by OneCX v8 libraries; usage → Angular Material in Phase A) |
+| `primeflex` | [X] | layout utilities → Tailwind in Phase A — **KEPT** in `package.json` (required by OneCX v8) |
+| `primeicons` | [X] | icon font → Material icons in Phase A — **KEPT** in `package.json` (required by OneCX v8) |
 | Tailwind CSS | [present / missing] | PrimeFlex→Tailwind target; if missing, configure first |
 
 **Target Material major = [X]** (must equal `@angular/core` major). Note any install requirement (a design-system install requires developer confirmation).
@@ -128,48 +128,29 @@ Migration identifier: **prime-to-material**
 - Final outcome: [success only after all pass]
 - Remaining issues: [list and how resolved]
 
+> **⚠️ DEFERRED PrimeNG REMOVAL — notify the developer here:**
+> `primeng`, `primeflex`, and `primeicons` have been **intentionally left in `package.json`** — they are NOT removed during this migration. The OneCX v8 libraries still depend on PrimeNG, so removing them now would break the build. When you upgrade Angular to **22** (the OneCX **v9** upgrade), add the v9 libraries — they are Angular Material compatible — and **then** you can remove `primeng` / `primeflex` / `primeicons`.
+> - [ ] Developer notified of the deferred PrimeNG removal (Angular 22 / OneCX v9 upgrade)
+
 ---
 
-## Phase B: Core Package Swap (developer approval REQUIRED)
+## Phase B: Cleanup + Error Recovery (developer approval REQUIRED)
 
-> Phase B is the removal of `primeng` / `primeflex` / `primeicons`. It is triggered after ALL Phase A tasks are `[x]`/`[-]`.
-> The orchestrator presents a summary and asks for explicit developer approval. Do NOT proceed without "Yes".
+> Phase B is cleanup + error recovery. It is triggered after ALL Phase A tasks are `[x]`/`[-]`.
+> The orchestrator presents a summary and asks for explicit developer approval before entering it.
+> **No package removal here** — `primeng` / `primeflex` / `primeicons` stay in `package.json` (required by the OneCX v8 libraries).
 
 **Orchestrator presents:**
 - Files changed in Phase A: [git diff --stat]
 - End-of-Phase-A build state: [pass/fail]
-- Packages to remove: [primeng@X, primeflex@Y, primeicons@Z]
 
 **Developer approval:**
-- [ ] Approved to proceed with package removal
+- [ ] Approved to proceed with Phase B (cleanup)
 - Approval recorded by: [Developer Name] on [Date]
 
-**Phase B tasks (per-package attempt + rollback-on-break):**
+### Phase B Tasks
 
-**[B.1]. Remove `primeng` (imports already gone in Phase A)**
-- [ ] not started
-- Steps: confirm zero in-scope `@primeng/*` / `<p-*>`; remove from `package.json`; `npm install`; **full** build → lint → test. **If build breaks, roll back THIS package's removal and document why** (transitive @onecx deps may require it).
-
-**[B.2]. Remove `primeflex` (Tailwind utilities already applied in Phase A)**
-- [ ] not started
-- Steps: confirm zero PrimeFlex utility classes on app markup; remove from `package.json`; `npm install`; **full** build → lint → test. **Roll back on break + document.**
-
-**[B.3]. Remove `primeicons` (Material icon ligatures already applied in Phase A)**
-- [ ] not started
-- Steps: confirm zero `pi-*` classes / `PrimeIcons` enum in scope; remove the icon-font import from global styles if unused; remove from `package.json`; `npm install`; **full** build → lint → test. **Roll back on break + document.**
-
-> Phase B runs the **FULL** suite (not scoped) — this is one of the allowed full-suite points.
-
----
-
-## Phase C: Post-Swap Cleanup + Error Recovery
-
-> After Phase B is confirmed stable (developer sign-off). Resolves any transitional build/test failures from the swap.
-> After ALL Phase C tasks: run the Error Recovery Loop below.
-
-### Phase C Tasks
-
-**[C.1]. [Cleanup task — e.g. structural consolidation / route removal / leftover import sweep]**
+**[B.1]. [Cleanup task — e.g. structural consolidation / route removal / leftover import sweep / module-federation config sweep]**
 - [ ] not started
 - Source page: N/A
 - Repository evidence: [TBD by executor]
@@ -177,17 +158,17 @@ Migration identifier: **prime-to-material**
 - Validation: build [TBD] | scoped test [TBD] | lint [TBD]
 - Final outcome: [TBD]
 
-### Error Recovery Loop (after all Phase C tasks)
+### Error Recovery Loop (after all Phase B tasks)
 
 - [ ] Rerun `npm run build` (should now pass)
 - [ ] Rerun `npm run lint` (must pass — 0 errors, vs baseline warnings)
 - [ ] Rerun `npm run test` **full suite** (must pass; coverage at or above baseline)
-- [ ] For each transitional error recorded in Phase B/C: check if NOW fixed → update entry
+- [ ] For each transitional error recorded in Phase B: check if NOW fixed → update entry
 - [ ] Remaining unfixed errors: document for manual fix, add to blockers
 
 ---
 
-## Final Verification and Validation (run at/after Phase C)
+## Final Verification and Validation (run at/after Phase B)
 
 - [ ] Zero `@primeng/*` imports in in-scope files (whole-repo grep, `pre_loaders/**` excluded)
 - [ ] Zero `<p-...>` tags in in-scope templates
@@ -195,7 +176,7 @@ Migration identifier: **prime-to-material**
 - [ ] No `ConfirmationService`/`MessageService`/`PrimeIcons`/`providePrimeNG`/`primeng/api`/`@primeuix/*` in scope
 - [ ] Zero PrimeFlex utility classes (`.col-*`, `.g-*`, `.m-*`, `.p-*`, `.row`, `.flex`, ...) on app markup — all replaced by Tailwind
 - [ ] Tailwind `content` config covers edited templates; utilities built
-- [ ] `primeng`/`primeflex`/`primeicons` removed from `package.json` (or documented why retained) + `package-lock.json` regenerated
+- [ ] `primeng`/`primeflex`/`primeicons` **still present** in `package.json` (intentionally kept — required by the OneCX v8 libraries; removal happens at the OneCX v9 / Angular 22 upgrade, not now)
 - [ ] Module-federation shared lists reflect final `@angular/material` + `@angular/cdk` (verify, don't hand-edit if auto-derived)
 - [ ] `npm run build` → `npm run lint` → `npm run test` all green (**full** output read)
 - [ ] Devserver visual pass reported to the developer
@@ -218,7 +199,7 @@ Migration identifier: **prime-to-material**
 
 | Timestamp | Phase | Error (last 20 lines) | Root Cause | Fix Applied | Result |
 |-----------|-------|-----------------------|------------|-------------|--------|
-| [time] | [A/B/C] | [error output] | [cause] | [fix] | [resolved/pending] |
+| [time] | [A/B] | [error output] | [cause] | [fix] | [resolved/pending] |
 
 ---
 
@@ -236,7 +217,7 @@ Migration identifier: **prime-to-material**
 
 **Start date:** [YYYY-MM-DD]
 **End date:** [YYYY-MM-DD when complete]
-**Total tasks:** [N] (Phase A: X, Phase B: Y, Phase C: Z)
+**Total tasks:** [N] (Phase A: X, Phase B: Y)
 **Completed:** [N]
 **Skipped:** [N] (via Skip N by developer)
 

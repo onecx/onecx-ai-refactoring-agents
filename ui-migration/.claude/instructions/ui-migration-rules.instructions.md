@@ -59,25 +59,24 @@ Run these BEFORE any planning or execution. The order is fixed and non-negotiabl
 ## Validation Rules (SCOPED — do not run the whole suite)
 - **Per change (default)**: run the test for the SPECIFIC changed file(s) only — `npm run test -- --include='**/<changed>.spec.ts'` (or the `--config`/`ng test --include=` equivalent for the repo's runner) — **plus** `npm run build`.
 - **Do NOT run the full test suite in the normal per-task flow** — it halts/destabilizes the system and is slow.
-- **Full suite runs ONLY at**: (a) Gate 1 baseline, (b) phase-gate validations (A→B, B→C), (c) final verification (end of Phase C).
+- **Full suite runs ONLY at**: (a) Gate 1 baseline, (b) phase-gate validations (A→B), (c) final verification (end of Phase B).
 - Read COMPLETE output — return codes alone are insufficient.
 - If build fails: capture the error (last 20+ lines), fix in the same invocation, rerun before validating lint.
 - If lint fails: capture, fix, rerun — 0 errors, 0 NEW warnings vs baseline.
 - If the scoped test fails: capture, fix, rerun until passing.
 - Never mark `[x]` without all 8 evidence fields filled and validation passed.
-- Lint must ALWAYS pass, including in Phase B and Phase C.
+- Lint must ALWAYS pass, including in Phase B (cleanup).
 
 ## Phase Boundaries
 - Gate 0 → Planning: only after Gates 1–3 all pass.
 - Phase 1 (planner) never executes code changes — discovery and planning only.
 - Planning → Phase A: requires explicit developer approval of the generated `UI_MIGRATION_PROGRESS.md` (mandatory gate).
-- Phase A → Phase B: requires explicit developer approval (mandatory gate). Phase B = the core package swap (removal of `primeng`/`primeflex`/`primeicons`).
-- Phase B → Phase C: developer confirmation after the build is stable.
+- Phase A → Phase B: requires explicit developer approval (mandatory gate). Phase B = cleanup + error-recovery (structural consolidation, leftover-import sweep, final verification). **No package removal in any phase** — `primeng`/`primeflex`/`primeicons` stay in `package.json` (required by the OneCX v8 libraries; removed only at the OneCX v9 / Angular 22 upgrade).
 
 ## No-Defer Rule
 - You CANNOT defer any sub-step to a later phase or a future invocation.
 - If a task needs a package not yet installed (e.g. `@angular/material-icons` for icon ligatures): confirm the major matches `@angular/core`, resolve an explicit stable version (`npm view <pkg>@<major> dist-tags` — never `@latest`), and install it in the same invocation. Installing a design-system package is an architectural decision — get developer confirmation first.
-- Do NOT remove `primeng`/`primeflex`/`primeicons` in a component task — their removal is the Phase B package-removal task only.
+- Do NOT remove `primeng`/`primeflex`/`primeicons` at any point — they are KEPT in `package.json` for the whole migration (required by the OneCX v8 libraries). Their removal is out of scope and happens at the OneCX v9 / Angular 22 upgrade.
 
 ## Error Handling
 - Errors during execution are YOUR job to fix in the SAME invocation — never defer.

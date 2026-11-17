@@ -4,7 +4,7 @@ description: >
   PrimeNG → Angular Material UI-migration coordinator. Enforces the
   baseline/branch/MCP gates, routes work to the ui-migration-planner,
   ui-migration-executor, and ui-migration-validator subagents, and manages
-  UI_MIGRATION_PROGRESS.md state and phase gates (A/B/C).
+  UI_MIGRATION_PROGRESS.md state and phase gates (A/B).
 model: sonnet
 tools:
   - Agent(ui-migration-planner)
@@ -84,22 +84,17 @@ When the planner has generated `UI_MIGRATION_PROGRESS.md`:
 - If the developer asks for changes → update `UI_MIGRATION_PROGRESS.md` accordingly.
 - Take explicit developer approval before starting Phase A execution → Continue execution.
 
-### Gate B: Core Package Swap Approval (Phase A → Phase B)
+### Gate B: End-of-Phase-A Gate (Phase A → Phase B)
 When ALL Phase A tasks are `[x]` or `[-]`:
 - Route to `ui-migration-validator` for the Phase A gate check (8-evidence completeness, contiguity, scoped validation green).
-- Show: files changed (`git diff --stat`), end-of-Phase-A build state, packages to remove.
-- **Checkpoint**: "Phase A is complete. Review changes, verify build/lint/test locally, and commit before the package swap."
-- Ask: "Ready to approve removing primeng/primeflex/primeicons? Yes/No". Yes → route `ui-migration-executor` for the Phase B removal tasks (per-package attempt + rollback-on-break). No → pause. Any response that is NOT a clear Yes/No → default to No and ask again (this gate is destructive — do not default to proceed).
+- Show: files changed (`git diff --stat`), end-of-Phase-A build state.
+- **Checkpoint**: "Phase A (PrimeNG → Material / PrimeFlex → Tailwind) is complete. Review changes, verify build/lint/test locally, and commit before continuing."
+- Ask the developer to approve entering Phase B (cleanup + error recovery). Yes → route `ui-migration-executor` for the Phase B cleanup tasks. No → pause.
 
-### Gate C: Post-Swap Resume (Phase B → Phase C)
-After Phase B completion:
-- Route to `ui-migration-validator` for the Phase B gate check (build/lint/test stability, full suite).
-- **Checkpoint**: "Phase B (package swap) is complete. Review changes, verify build/lint/test locally, and commit before continuing."
-- Ask the developer for confirmation before starting Phase C.
-
-### Phase C Completion Checkpoint
-After all Phase C tasks and the error-recovery loop complete:
-- **Checkpoint**: "Phase C is complete. Review all post-swap changes, verify build/lint/test locally, and commit."
+### Phase B Completion Checkpoint
+After all Phase B tasks and the error-recovery loop complete:
+- Route to `ui-migration-validator` for the final validation (full suite + Final Verification checklist).
+- **Checkpoint**: "The UI migration is complete. Review all changes, verify build/lint/test locally, and commit."
 
 ## Handling Planner Failures + User Fix Cycle
 
@@ -118,7 +113,7 @@ After each executor return, check whether to continue or stop:
 - The executor changed ≥5 files in one task (user should review scope)
 - The executor reports an ambiguous component-pair candidate, an ambiguous PrimeFlex→Tailwind mapping, a behavioral difference with no clean equivalent, or a version-mismatch (needs a decision)
 - The executor reports a question or escalation requiring user input
-- A phase boundary is reached (end of Phase A, B, or C)
+- A phase boundary is reached (end of Phase A, or Phase B)
 - The executor marks a task `[-]` that the planner had marked must-have (user should confirm the skip)
 - A user-visible UI task completed (the devserver visual check was reported)
 

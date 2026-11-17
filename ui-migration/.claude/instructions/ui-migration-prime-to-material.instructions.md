@@ -167,13 +167,13 @@ PrimeFlex provides layout utilities that have **direct Tailwind equivalents**. T
 - **Version lockstep**: `@angular/material` major == `@angular/core` major. If the executor finds a mismatch or a doc suggests another major → STOP and ask; never install a mismatched major, never use `--legacy-peer-deps` to force it.
 - **Module federation**: this repo ships a module-federation shell — when adding `@angular/material` (and `@angular/cdk`) packages, verify and update the sharing lists in `module-federation.config.ts` (Material shared as a versioned entry like other `@angular/*` shared packages).
 - **Bootstrap/module dedup**: Material module imports or providers that belong to the root bootstrap must not be duplicated per component — keep shared providers in `bootstrap.ts`/`app.module.ts`, component-scoped imports in the component.
-- **Package removal is the FINAL task only**: `primeng`, `primeflex`, `primeicons` stay installed until ALL component tasks are `[x]`/`[-]`. Removing them mid-migration breaks in-progress tasks.
+- **PrimeNG packages are KEPT (never removed in this migration)**: `primeng`, `primeflex`, `primeicons` stay in `package.json` for the entire migration. The OneCX v8 libraries still depend on PrimeNG, so removing them would break the build. Their removal is **out of scope** — it happens at the OneCX v9 / Angular 22 upgrade (when the Material-compatible v9 libraries are added). Notify the developer of this at the end of Phase A.
 - **Legacy styling untouched**: `@onecx/portal-layout-styles` and everything under `pre_loaders/**` are out of scope — grep hits there are recorded as "excluded — pre_loaders/legacy scope", never edited.
 - **Visual check is mandatory for user-visible tasks**: devserver + clean build + report local URL to the developer before marking the task done.
 
 ## Task-Specific Applicability Rules
 
-- One task per PrimeNG component family (contiguous numbering per phase) + one task per PrimeFlex→Tailwind surface + one final cleanup task (package removal + config sweep). The full model is the 3-phase A/B/C structure in `UI_MIGRATION_PROGRESS.md` (Phase A = component + PrimeFlex→Tailwind tasks, Phase B = package removal, Phase C = cleanup + error recovery).
+- One task per PrimeNG component family (contiguous numbering per phase) + one task per PrimeFlex→Tailwind surface + one final cleanup task (config sweep — **no package removal**). The full model is the 2-phase A/B structure in `UI_MIGRATION_PROGRESS.md` (Phase A = component + PrimeFlex→Tailwind tasks, Phase B = cleanup + error recovery). `primeng`/`primeflex`/`primeicons` are **kept** in `package.json` for the whole migration (required by the OneCX v8 libraries; removed only at the OneCX v9 / Angular 22 upgrade).
 - Applicability = **entire-repo grep** (all dirs, all file types) for the OLD patterns of that component family:
   1. `@primeng/<component>` imports (`.ts`)
   2. `<p-<component>` template tags (`.html`, including dynamic/`*ngIf`-wrapped occurrences)
@@ -198,7 +198,7 @@ PrimeFlex provides layout utilities that have **direct Tailwind equivalents**. T
 - [ ] No `providePrimeNG` / `primeng.config.ts` references in scope
 - [ ] Zero PrimeFlex utility classes (`.col-*`, `.g-*`, `.m-*`, `.p-*`, `.row`, `.flex`, ...) on app markup in scope — all replaced by Tailwind utilities (whole-repo grep, `pre_loaders/**` excluded)
 - [ ] Tailwind `content` config covers the edited templates; generated utilities are built
-- [ ] `primeng`, `primeflex`, `primeicons` removed from `package.json` + `npm install` + `package-lock.json` regenerated
+- [ ] `primeng`, `primeflex`, `primeicons` **still present** in `package.json` (intentionally kept — required by the OneCX v8 libraries; removed only at the OneCX v9 / Angular 22 upgrade, not now)
 - [ ] `module-federation.config.ts` sharing lists include the final `@angular/material` + `@angular/cdk` packages
 - [ ] `npm run build` → `npm run lint` → `npm run test` all green (full output read, not just exit code)
 - [ ] Devserver visual pass reported to the developer

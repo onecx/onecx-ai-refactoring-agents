@@ -72,7 +72,7 @@ Read `package.json` and record:
 - `@angular/core` (current framework major)
 - `@angular/material` (major MUST equal core major; note if already installed → install is a no-op)
 - `@angular/cdk` (same major)
-- `primeng` / `primeflex` / `primeicons` (to be removed in Phase B)
+- `primeng` / `primeflex` / `primeicons` (KEPT in `package.json` — required by the OneCX v8 libraries; see the deferred-removal note)
 - Tailwind CSS (present / missing — the PrimeFlex→Tailwind target; if missing, note that it must be configured first)
 
 Target Material major = the `@angular/core` major. **Angular version bumps are OUT OF SCOPE** here (that is the Angular version migration's job).
@@ -102,10 +102,9 @@ For the PrimeFlex layout/spacing/grid utilities on the APP's own markup:
 
 ## Step 4: Classify into Phases
 
-- **Phase A** = pre-removal code changes: every applicable PrimeNG component family (one task each) + every PrimeFlex→Tailwind surface (one task each). No package removal here.
-- **Phase B** = core package swap: per-package removal tasks for `primeng`, `primeflex`, `primeicons` (per-package attempt + rollback-on-break). Approval-gated.
-- **Phase C** = post-swap cleanup + error-recovery loop: structural consolidation (e.g. demo-route consolidation if the repo has one), leftover-import sweep, final verification, error recovery.
-- Ensure contiguous numbering per phase: A.1, A.2, ... B.1, B.2, ... C.1, C.2, ...
+- **Phase A** = code changes: every applicable PrimeNG component family (one task each) + every PrimeFlex→Tailwind surface (one task each). **No package removal here** — `primeng` / `primeflex` / `primeicons` stay in `package.json` (required by the OneCX v8 libraries).
+- **Phase B** = cleanup + error-recovery loop: structural consolidation (e.g. demo-route consolidation if the repo has one), leftover-import sweep, config sweep, final verification, error recovery.
+- Ensure contiguous numbering per phase: A.1, A.2, ... B.1, B.2, ...
 - Record the source (MCP tool / URL) for every pair and every mapping.
 
 ## Step 5: Create UI_MIGRATION_PROGRESS.md
@@ -114,12 +113,14 @@ STRICTLY use the template from [UI_MIGRATION_PROGRESS.template.md](../templates/
 - Mention the active data file and active rules file at the top.
 - Populate the Initialization Gates (Gates 1–3) with the real results.
 - Populate the Version Reality Check, Documentation Sources, and the Discovery & Inventory tables.
-- Populate every Phase A / B / C task with `[ ]` markers and the 8-evidence-field skeleton.
+- Populate every Phase A / B task with `[ ]` markers and the 8-evidence-field skeleton.
 - Write findings **incrementally** (per inventory) to avoid context loss.
 
 ## Output
 
-Show: gate results (1–3), total tasks by phase, the component-pair table, the PrimeFlex→Tailwind surface table, and the list of AMBIGUOUS pairs/mappings that need a decision at planning approval. Do NOT include time estimates. Do NOT start execution — the orchestrator handles the approval gate.
+Show: gate results (1–3), total tasks by phase, the component-pair table, the PrimeFlex→Tailwind surface table, the list of AMBIGUOUS pairs/mappings that need a decision at planning approval, and the **deferred-removal note** (see below). Do NOT include time estimates. Do NOT start execution — the orchestrator handles the approval gate.
+
+**Deferred-removal note (always surface this):** after the swap, `primeng`, `primeflex`, and `primeicons` REMAIN in `package.json` — the OneCX v8 libraries still depend on PrimeNG, so removing them now would break the build. Tell the developer: *"PrimeNG is left in `package.json` for now. When you upgrade Angular to 22 (the OneCX v9 upgrade), add the v9 libraries — they are Material-compatible — and you can then remove `primeng` / `primeflex` / `primeicons`."*
 
 ## Context Retention
 

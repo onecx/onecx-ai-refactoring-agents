@@ -159,7 +159,7 @@ EXECUTION JOURNEY:
 ```
 
 ### Step 6: Validate (SCOPED — do NOT run the whole suite)
-Every task with file changes validates **scoped** to the changed files plus the build. **Do NOT run the full test suite in the per-task flow** — it halts/destabilizes the system and is slow. The full suite runs only at gates/final (Phase B package swap, phase gates, final verification).
+Every task with file changes validates **scoped** to the changed files plus the build. **Do NOT run the full test suite in the per-task flow** — it halts/destabilizes the system and is slow. The full suite runs only at gates/final (phase gates and final verification).
 1. **Build**: `npm run build` (or `mcp__angular-cli__run_target`). Must pass. Read COMPLETE output — return code alone is not enough.
 2. **Scoped test (changed files ONLY)**: run the test for the specific file(s) you changed — `npm run test -- --include='**/<changed>.spec.ts'` (or `ng test --include=...` / the `--config` equivalent for the repo's runner). Must pass. Spec files for touched components must be updated to Material selectors/providers. Record which files were scoped.
 3. **Lint**: 0 errors, 0 NEW warnings vs the recorded baseline. (Scoped to changed files if the repo supports it; otherwise full lint — lint is cheap and must stay green.)
@@ -198,7 +198,7 @@ Return a structured summary so the orchestrator/user can decide whether to conti
 - When installing, the Material major MUST match the installed `@angular/core` major. Resolve the exact version with `npm view @angular/material@<major> version` — never `@latest`.
 - `@angular/material-icons` is added only when the icon task (T.18 / the icons family) is confirmed and needed; confirm with the developer first.
 - **Tailwind (PrimeFlex→Tailwind tasks):** assume Tailwind is present. If it is missing, configure it first (add `tailwindcss` + PostCSS + a `tailwind.config` with `content` covering the app templates) and confirm with the developer. Verify the `content` paths cover the edited templates so utilities are actually built.
-- Do NOT remove `primeng` / `primeflex` / `primeicons` packages in a component/PrimeFlex task. Their removal is the **Phase B** package-swap (per-package attempt + rollback-on-break) — only the user/orchestrator schedules it, after ALL Phase A tasks are `[x]`/`[-]`.
+- Do NOT remove `primeng` / `primeflex` / `primeicons` from `package.json` at any point. They are **KEPT** for the duration of this migration — the OneCX v8 libraries still depend on PrimeNG, and removing them would break the build. Their removal is **out of scope** and happens later, at the OneCX v9 / Angular 22 upgrade (when Material-compatible v9 libraries are added).
 
 ## Independent Execution Per Spawn
 

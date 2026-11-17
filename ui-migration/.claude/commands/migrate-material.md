@@ -9,7 +9,7 @@ disable-model-invocation: true
 allowed-tools: Agent(ui-migration-orchestrator) Agent(ui-migration-validator) Read Grep Glob Bash(npm run build) Bash(npm run lint) Bash(npm run test)
 ---
 
-> Entry point for the PrimeNG → Angular Material UI swap. In Claude Code: route to the `ui-migration-orchestrator` agent (`.claude/agents/ui-migration-orchestrator.md`), which drives the migration end to end — gates → planning → approval → Phase A (component + PrimeFlex→Tailwind) → Phase B (package removal) → Phase C (cleanup + error recovery).
+> Entry point for the PrimeNG → Angular Material UI swap. In Claude Code: route to the `ui-migration-orchestrator` agent (`.claude/agents/ui-migration-orchestrator.md`), which drives the migration end to end — gates → planning → approval → Phase A (component + PrimeFlex→Tailwind) → Phase B (cleanup + error recovery). **`primeng`/`primeflex`/`primeicons` are NOT removed** — they stay in `package.json` (required by the OneCX v8 libraries) and are removed only at the OneCX v9 / Angular 22 upgrade.
 
 ## Argument routing
 
@@ -37,7 +37,7 @@ Read the invocation argument from `$ARGUMENTS` (first token, case-insensitive). 
 
 ## Read at the start of every invocation
 
-- **Active data file**: `.claude/instructions/ui-migration-prime-to-material.instructions.md` — MCP source list, component-pair starter table, PrimeFlex→Tailwind mapping, behavioral-difference notes, repo-specific rules (module-federation sharing, `pre_loaders` scope, package-removal-as-Phase-B).
+- **Active data file**: `.claude/instructions/ui-migration-prime-to-material.instructions.md` — MCP source list, component-pair starter table, PrimeFlex→Tailwind mapping, behavioral-difference notes, repo-specific rules (module-federation sharing, `pre_loaders` scope, **PrimeNG packages kept for the OneCX v8 upgrade**).
 - **Active rules file**: `.claude/instructions/ui-migration-rules.instructions.md` — hard rules (state, gates, task execution, **scoped** validation, error handling, decision protocol).
 - **Project anti-patterns**: `.claude/instructions/migration-custom-user.instructions.md` — the project-specific rules + anti-patterns list (DO-NOT-REPEAT mistakes) that applies to all migrations in this repo.
 
@@ -58,7 +58,7 @@ Read the invocation argument from `$ARGUMENTS` (first token, case-insensitive). 
 
 Check if `UI_MIGRATION_PROGRESS.md` exists in the workspace root.
 
-- **If it does NOT exist**: gates have not been passed. The orchestrator runs Gates 1–3, then Discovery/Planning (full-repo PrimeNG inventory + PrimeFlex→Tailwind inventory + Material alternatives), creating `UI_MIGRATION_PROGRESS.md` from `.claude/templates/UI_MIGRATION_PROGRESS.template.md` (3-phase A/B/C, `[ ]`/`[x]`/`[-]` markers, 8 evidence fields per task, contiguous numbering). Then the developer reviews the plan before execution.
+- **If it does NOT exist**: gates have not been passed. The orchestrator runs Gates 1–3, then Discovery/Planning (full-repo PrimeNG inventory + PrimeFlex→Tailwind inventory + Material alternatives), creating `UI_MIGRATION_PROGRESS.md` from `.claude/templates/UI_MIGRATION_PROGRESS.template.md` (2-phase A/B — Phase A = component + PrimeFlex→Tailwind, Phase B = cleanup + error recovery; `primeng`/`primeflex`/`primeicons` kept, not removed), `[ ]`/`[x]`/`[-]` markers, 8 evidence fields per task, contiguous numbering. Then the developer reviews the plan before execution.
 - **If it exists**: read it, show current status (gates, phase, completed/pending task counts), then route ONE task at a time.
 
 Route via the Agent tool with `subagent_type: ui-migration-orchestrator`, passing the full `UI_MIGRATION_PROGRESS.md` content and both active file paths (data + rules).
@@ -79,7 +79,7 @@ Stop and return to the user when ANY:
 - Executor changed ≥5 files in one task (review scope)
 - Executor reports an ambiguous component-pair candidate, an ambiguous PrimeFlex→Tailwind mapping, a behavioral difference with no clean equivalent, or a version-mismatch (needs a decision)
 - A user-visible UI task completed (visual devserver check was reported)
-- A phase boundary is reached (end of Phase A, B, or C)
+- A phase boundary is reached (end of Phase A, or Phase B)
 - The final cleanup task completed (report final verification)
 
 Otherwise continue to the next `[ ]` task.

@@ -2,7 +2,7 @@
 name: ui-migration-validator
 description: >
   Validate PrimeNG → Angular Material UI-migration task completeness,
-  scoped build/lint/test state, and phase gate readiness (A/B/C).
+  scoped build/lint/test state, and phase gate readiness (A/B).
   Independent verification of executor work.
 model: sonnet
 tools:
@@ -58,23 +58,19 @@ Triggered by the orchestrator at phase transitions.
 3. Verify zero in-scope `@primeng/*` imports / `<p-*>` tags for every migrated family (whole-repo grep, `pre_loaders/**` excluded).
 4. Verify zero PrimeFlex utility classes on app markup (all replaced by Tailwind).
 5. Run the **FULL** suite (`npm run build` → `npm run lint` → `npm run test`) — this is a full-suite point — and record state.
-6. Report readiness for the Phase B (package removal) approval decision.
-
-**Gate C (Phase B → Phase C):**
-1. Verify the package-removal tasks completed (or documented-why-retained per rollback).
-2. Run the **FULL** suite and record state.
-3. Compare test coverage and lint warnings to the Phase 1 baseline.
-4. Report stability status and any regressions.
+6. Verify `primeng`, `primeflex`, `primeicons` are STILL present in `package.json` (they are intentionally kept — required by the OneCX v8 libraries; do NOT flag their presence as a failure).
+7. Report readiness for the Phase B (cleanup) approval decision.
 
 ### Mode 3: Final Validation
-Triggered after all Phase C tasks complete (end-of-migration check).
+Triggered after all Phase B tasks complete (end-of-migration check).
 
 1. Run the **FULL** suite (`npm run build` → `npm run lint` → `npm run test`) — read complete output.
 2. Compare test coverage and lint warnings: Phase 1 baseline vs final.
-3. Walk the Final Verification checklist in the data file (zero `@primeng/*`, zero `<p-*>`, zero PrimeFlex utility classes, packages removed-or-documented, lockfile regenerated, module-federation lists correct).
+3. Walk the Final Verification checklist in the data file (zero `@primeng/*`, zero `<p-*>`, zero PrimeFlex utility classes, **`primeng`/`primeflex`/`primeicons` still present in `package.json`** (intentionally kept), module-federation lists correct).
 4. Check for any remaining `[ ]` tasks in `UI_MIGRATION_PROGRESS.md`.
 5. Verify all previously recorded transitional errors are now resolved.
-6. Report: MIGRATION COMPLETE or list remaining issues.
+6. Confirm the **deferred-removal note** is surfaced to the developer: PrimeNG stays for now and is removed at the OneCX v9 / Angular 22 upgrade.
+7. Report: MIGRATION COMPLETE or list remaining issues.
 
 ## Output Format
 
