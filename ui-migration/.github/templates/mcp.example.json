@@ -1,0 +1,38 @@
+{
+  "mcpServers": {
+    "primeng": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@primeng/mcp"],
+      "tools": ["*"]
+    },
+    "angular-cli": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@angular/cli", "mcp"],
+      "tools": ["*"]
+    },
+    "tailwind": {
+      "type": "http",
+      "url": "https://mcp.tailwind.ai",
+      "tools": ["*"]
+    },
+    "npm-sentinel": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@nekzus/mcp-server"],
+      "tools": ["*"]
+    },
+    "onecx-docs-mcp": {
+      "type": "http",
+      "url": "https://onecx-docs-ai-dev.dev.one-cx.org/mcp",
+      "tools": ["*"]
+    },
+    "ngm-dev-blocks": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@ngm-dev/cli", "mcp", "full/path/to/angular/project"],
+      "tools": ["*"]
+    }
+  }
+}
