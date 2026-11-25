@@ -1,0 +1,31 @@
+{
+  "_comment": "Project MCP config; place at the Angular workspace root.",
+  "mcpServers": {
+    "primeng": {
+      "_comment": "PrimeNG API docs (both targets).",
+      "command": "npx",
+      "args": ["-y", "@primeng/mcp"]
+    },
+    "npm-sentinel": {
+      "_comment": "NPM package metadata.",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@nekzus/mcp-server"]
+    },
+    "onecx-docs-mcp": {
+      "_comment": "OneCX documentation.",
+      "type": "http",
+      "url": "https://onecx-docs-ai-dev.dev.one-cx.org/mcp"
+    },
+    "angular-cli": {
+      "_comment": "Angular docs and validation (both targets).",
+      "command": "npx",
+      "args": ["-y", "@angular/cli", "mcp"]
+    },
+    "ngm-dev-blocks": {
+      "_comment": "Material block generator; '.' is the Angular workspace root.",
+      "command": "npx",
+      "args": ["-y", "@ngm-dev/cli", "mcp", "."]
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "_comment": "Claude Code template; GitHub Copilot's equivalent is under .github/templates.",
+  "_verified": {
+    "primeng": "@primeng/mcp is published on npm (verified 2026-11); its README documents `npx -y @primeng/mcp` as the public command and `claude mcp add primeng -- npx -y @primeng/mcp` for Claude Code",
+    "npm-sentinel": "@nekzus/mcp-server is published on npm (verified 2026-11)",
+    "angular-cli": "VERIFIED 2026-11 — `@angular/cli` ships a built-in `mcp` subcommand (`ng mcp`), so `npx -y @angular/cli mcp` is a valid stdio entry (NEW-side docs + build/devserver validation, BOTH targets). In a real project pass `--root <abs-path-to-project>`.",
+    "tailwind": "Remote/URL MCP at https://mcp.tailwind.ai (Tailwind's official MCP, BOTH targets for PrimeFlex->Tailwind). Config is {\"tailwind\":{\"url\":\"https://mcp.tailwind.ai\"}} — a remote HTTP server, NOT an npx stdio entry. Verify at Gate 3 by listing mcp__tailwind__* tools. Companion skills: `npx @tailwind-app/skills`.",
+    "ngm-dev-blocks": "Material target ONLY — VERIFIED 2026-11 — the dedicated Angular Material generator from ui.angular-material.dev/docs/mcp. `npx -y @ngm-dev/cli mcp <abs-project-dir>` exposes get-all-block-names / generate-angular-material-block / setup-angular-material-blocks. Complements angular-cli (generator writes the new Material+Tailwind code; angular-cli validates it). NOT used for the Optimus target."
+  },
+  "mcpServers": {
+    "primeng": {
+      "_comment": "PrimeNG docs (both targets).",
+      "command": "npx",
+      "args": ["-y", "@primeng/mcp"]
+    },
+    "angular-cli": {
+      "_comment": "Angular docs and validation (both targets).",
+      "command": "npx",
+      "args": ["-y", "@angular/cli", "mcp"]
+    },
+    "tailwind": {
+      "_comment": "Tailwind docs (both targets).",
+      "url": "https://mcp.tailwind.ai",
+      "type": "http"
+    },
+    "npm-sentinel": {
+      "_comment": "NPM package metadata.",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@nekzus/mcp-server"]
+    },
+    "onecx-docs-mcp": {
+      "_comment": "OneCX documentation.",
+      "url": "https://onecx-docs-ai-dev.dev.one-cx.org/mcp",
+      "type": "http"
+    },
+    "ngm-dev-blocks": {
+      "_comment": "Material blocks; replace path with workspace path, or '.' at its root.",
+      "command": "npx",
+      "args": ["-y", "@ngm-dev/cli", "mcp", "full/path/to/angular/project"]
+    }
+  }
+}
