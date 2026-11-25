@@ -1,34 +1,41 @@
 {
+  "_comment": "GitHub Copilot template; Claude Code's equivalent is under .claude/templates.",
   "mcpServers": {
     "primeng": {
+      "_comment": "PrimeNG docs (both targets).",
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@primeng/mcp"],
       "tools": ["*"]
     },
     "angular-cli": {
+      "_comment": "Angular docs and validation (both targets).",
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@angular/cli", "mcp"],
       "tools": ["*"]
     },
     "tailwind": {
+      "_comment": "Tailwind docs (both targets).",
       "type": "http",
       "url": "https://mcp.tailwind.ai",
       "tools": ["*"]
     },
     "npm-sentinel": {
+      "_comment": "NPM package metadata.",
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@nekzus/mcp-server"],
       "tools": ["*"]
     },
     "onecx-docs-mcp": {
+      "_comment": "OneCX documentation.",
       "type": "http",
       "url": "https://onecx-docs-ai-dev.dev.one-cx.org/mcp",
       "tools": ["*"]
     },
     "ngm-dev-blocks": {
+      "_comment": "Material blocks; replace path with workspace path, or '.' at its root.",
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@ngm-dev/cli", "mcp", "full/path/to/angular/project"],

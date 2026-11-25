@@ -1,5 +1,5 @@
 {
-  "_comment": "EXAMPLE MCP config for the PrimeNG -> (Angular Material | Optimus UI) migration. Servers split by target: (1) BOTH targets: primeng (OLD side), angular-cli (validation), tailwind (PrimeFlex->Tailwind). (2) Material target ONLY: ngm-dev-blocks (Material generator) — Optimus has NO MCP (it is an internal library with WebFetch-only docs). Gate 3 of ui-migration-rules requires the relevant servers present and reachable for the active target. Copy the relevant entries into the repo's .mcp.json (project-level) or ~/.claude.json (user-level).",
+  "_comment": "Claude Code template; GitHub Copilot's equivalent is under .github/templates.",
   "_verified": {
     "primeng": "@primeng/mcp is published on npm (verified 2026-11); its README documents `npx -y @primeng/mcp` as the public command and `claude mcp add primeng -- npx -y @primeng/mcp` for Claude Code",
     "npm-sentinel": "@nekzus/mcp-server is published on npm (verified 2026-11)",
@@ -9,31 +9,33 @@
   },
   "mcpServers": {
     "primeng": {
-      "_comment": "BOTH targets — PrimeNG MCP, audit the OLD PrimeNG usage (component API, template syntax, behavior). Exposes mcp__primeng__* tools (list, version, get_component, search, get_example, validate_usage).",
+      "_comment": "PrimeNG docs (both targets).",
       "command": "npx",
       "args": ["-y", "@primeng/mcp"]
     },
     "angular-cli": {
-      "_comment": "BOTH targets — NEW-side Angular docs + build/devserver VALIDATION (ng mcp). Verified: `@angular/cli` ships an `mcp` subcommand. In a real project add `--root <abs-project-dir>`. Exposes mcp__angular-cli__* (get_best_practices, search_documentation, list_projects, run_target, devserver_*).",
+      "_comment": "Angular docs and validation (both targets).",
       "command": "npx",
       "args": ["-y", "@angular/cli", "mcp"]
     },
     "tailwind": {
-      "_comment": "BOTH targets — Tailwind MCP (official, Tailwind CSS docs + API lookups for the PrimeFlex->Tailwind swap, incl. the MANDATORY size-difference check). REMOTE/URL server (HTTP), not an npx stdio entry — no command/args. Verify at Gate 3 by listing mcp__tailwind__* tools. Companion skills (optional, separate from MCP): `npx @tailwind-app/skills`.",
+      "_comment": "Tailwind docs (both targets).",
       "url": "https://mcp.tailwind.ai",
       "type": "http"
     },
     "npm-sentinel": {
+      "_comment": "NPM package metadata.",
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@nekzus/mcp-server"]
     },
     "onecx-docs-mcp": {
+      "_comment": "OneCX documentation.",
       "url": "https://onecx-docs-ai-dev.dev.one-cx.org/mcp",
       "type": "http"
     },
     "ngm-dev-blocks": {
-      "_comment": "Material target ONLY (Optimus has NO MCP) — DEDICATED Angular Material MCP (ui.angular-material.dev/docs/mcp) — GENERATE new Material + Tailwind blocks. Verified: `@ngm-dev/cli mcp <dir>` exposes mcp__ngm-dev-blocks__* (setup-angular-material-blocks, generate-angular-material-block, get-all-block-names). Replace `full/path/to/angular/project` with the actual project dir before use. Complementary to angular-cli (which does docs + validation).",
+      "_comment": "Material blocks; replace path with workspace path, or '.' at its root.",
       "command": "npx",
       "args": ["-y", "@ngm-dev/cli", "mcp", "full/path/to/angular/project"]
     }
